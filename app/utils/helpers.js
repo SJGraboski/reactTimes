@@ -22,7 +22,7 @@ var axios = require('axios');
 var helpers = {
 	getArticles: function(term, start, end){
 		return axios.get(
-		"https://api.nytimes.com/svc/search/v2/articlesearch.json" +
+		"https://api.nytimes.com/svc/search/v2/articlesearch.json"+
 		"?api-key=2ba014e98c7a46ed818343e31f61e45f" +
 		"&q=" + term +
 		"&begin_date=" + start +
