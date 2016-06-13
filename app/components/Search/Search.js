@@ -1,3 +1,6 @@
+// search form component
+// =====================
+
 // require react
 var React = require('react');
 

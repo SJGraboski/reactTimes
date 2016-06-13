@@ -1,4 +1,5 @@
 // result component for query and saved pages
+// ==========================================
 
 // dependency
 var React = require('react');
@@ -12,9 +13,10 @@ var Result = React.createClass({
   // get initial state
 	getInitialState: function() {
 		return {
-      // if there's a results prop with articles, make that the state. Otherwise, it's blank
+      // if there's a results prop with articles, make that the state. 
+      // Otherwise, it's blank
 			articles: this.props.results.articles ? this.props.results.articles : ""
-			}
+		}
 	},
   // if prop updates, make the articles in the results prop the result
 	componentDidUpdate: function(prevProps, prevState) {
@@ -28,7 +30,6 @@ var Result = React.createClass({
   render: function() {
     // If there are articles in the state, and the state isn't "", do this
   	if (this.state.articles && this.state.articles != "") {
-  		
       // map function for each article in the state
       var articles = this.state.articles.map(function(article, index){
   		  // if there's a main in the headline, use that as the headline
@@ -104,5 +105,5 @@ var Result = React.createClass({
   }
 });
 
-
+// export the component
 module.exports = Result;
