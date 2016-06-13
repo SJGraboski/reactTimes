@@ -24128,7 +24128,7 @@
 			return React.createElement(
 				'div',
 				null,
-				React.createElement(Header, { head: 'Test', subhead: 'Second Test' }),
+				React.createElement(Header, { head: 'React Times', subhead: 'Search for NYTimes articles, save them to a database!' }),
 				React.createElement(Search, { onSearchSubmit: this.setQuery }),
 				React.createElement(Result, { results: this.state.results, deleteMode: false, deleter: '' })
 			);
@@ -24352,7 +24352,7 @@
 										type: 'text',
 										className: 'form-control',
 										id: 'search_start',
-										placeholder: 'Start Date',
+										placeholder: 'Start Date (YYYYMMDD)',
 										value: this.state.start /* this state is this elements value */,
 										onChange: this.handleStartChange /* run this when input changes */
 									}),
@@ -24369,7 +24369,7 @@
 										type: 'text',
 										className: 'form-control',
 										id: 'search_start',
-										placeholder: 'Start Date',
+										placeholder: 'End Date (YYYYMMDD)',
 										value: this.state.end /* this state is this elements value */,
 										onChange: this.handleEndChange /* run this when input changes */
 									})
@@ -25888,7 +25888,7 @@
 			return React.createElement(
 				'div',
 				null,
-				React.createElement(Header, { head: 'Saved Articles', subhead: 'Saved Articles' }),
+				React.createElement(Header, { head: 'Saved Articles', subhead: 'Press the delete button to delete articles' }),
 				React.createElement(Result, { results: this.state.results, deleteMode: true, deleter: this.deleteArticle })
 			);
 		}
