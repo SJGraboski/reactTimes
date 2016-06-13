@@ -24023,12 +24023,6 @@
 	var Query = __webpack_require__(208);
 	var Saved = __webpack_require__(232);
 
-	/*Note how we include the Profile component as a route. 
-	We don't need to include the sub components like Repos or User Profile
-	These are already included here.
-	*/
-	// var Profile = require('../components/Search');
-
 	// We will then pull the router
 	var Router = __webpack_require__(159);
 	var Route = Router.Route;
@@ -24050,13 +24044,15 @@
 
 	"use strict";
 
+	// App
+	// ===
 	var React = __webpack_require__(1);
 
 	var App = React.createClass({
 		displayName: "App",
 
 
-		// refer to everything
+		// main component app. Takes in the other routes
 		render: function render() {
 			return React.createElement(
 				"div",
@@ -24066,6 +24062,7 @@
 		}
 	});
 
+	// export, where config/router will require it.
 	module.exports = App;
 
 /***/ },
@@ -24074,22 +24071,26 @@
 
 	'use strict';
 
-	// refer to Search/Search.js
+	// Query page
+	// ==========
+
+	// dependencies
 	var React = __webpack_require__(1);
 	var Router = __webpack_require__(159);
+
+	// load components
 	var Header = __webpack_require__(209);
 	var Search = __webpack_require__(210);
 	var Result = __webpack_require__(211);
 
+	// helpers functions
 	var helpers = __webpack_require__(212);
 
-	// Include the Repos, UserProfile, and Notes Components
-	// var Search = require('./Search/Search');
-	// var UserProfile = require('./Search/Result');
-
+	// create Query component
 	var Query = React.createClass({
 		displayName: 'Query',
 
+		// state initialized for form queries and results
 		getInitialState: function getInitialState() {
 			return {
 				term: "",
@@ -24098,26 +24099,31 @@
 				results: ""
 			};
 		},
+		// componentDidUpdate: grab articles whenever update comes in
 		componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
 			// check to make sure at least one of the search inputs are different
 			if (this.state.term != prevState.term && this.state.term != "" || this.state.start != prevState.start && this.state.start != "" || this.state.end != prevState.end && this.state.end != "") {
+				// helpers getArticles
 				helpers.getArticles(this.state.term, this.state.start, this.state.end).then(function (data) {
-					console.log(data);
+					// if the data differs from the state's results, make the data the results
 					if (data != this.state.results) {
 						this.setState({
 							results: data
 						});
 					}
-				}.bind(this));
+				}.bind(this)); // make "this" function as exprected
 			}
 		},
+		// set Query to inputs
 		setQuery: function setQuery(newTerm, newStart, newEnd) {
+			// set the state to the for inputs
 			this.setState({
 				term: newTerm,
 				start: newStart,
 				end: newEnd
 			});
 		},
+		// render function
 		render: function render() {
 			return React.createElement(
 				'div',
@@ -24137,8 +24143,13 @@
 
 	"use strict";
 
+	// Header component
+	// ================
+
+	// react dependencies
 	var React = __webpack_require__(1);
 
+	// loader
 	var Header = React.createClass({
 		displayName: "Header",
 
@@ -24228,13 +24239,17 @@
 
 	'use strict';
 
+	// search form component
+	// =====================
+
+	// require react
 	var React = __webpack_require__(1);
 
 	// create the search form component
 	var Search = React.createClass({
 		displayName: 'Search',
 
-
+		// get initial state
 		getInitialState: function getInitialState() {
 			return {
 				term: '',
@@ -24242,27 +24257,36 @@
 				end: ''
 			};
 		},
+		// handle topic changes in form
 		handleTopicChange: function handleTopicChange(e) {
 			this.setState({ term: e.target.value });
 		},
+		// hand startDate change in form
 		handleStartChange: function handleStartChange(e) {
 			this.setState({ start: e.target.value });
 		},
+		// handle endDate change in form
 		handleEndChange: function handleEndChange(e) {
 			this.setState({ end: e.target.value });
 		},
+		// handle submit
 		handleSubmit: function handleSubmit(e) {
 			e.preventDefault();
+			// grab the term, start and end from the form, and trim them
 			var term = this.state.term.trim();
 			var start = this.state.start.trim();
 			var end = this.state.end.trim();
 			if (!term || !start || !end) {
 				return;
 			}
+			// make the onSearchSubmit prop = to the term, start and end.
+			// this lets the parent component grab this information,
+			// making it possible to place the new articles in the results
 			this.props.onSearchSubmit(term, start, end);
 			return false;
 		},
 
+		// render the component
 		render: function render() {
 
 			return React.createElement(
@@ -24311,8 +24335,8 @@
 										className: 'form-control',
 										id: 'search_topic',
 										placeholder: 'Enter a topic',
-										value: this.state.term,
-										onChange: this.handleTopicChange
+										value: this.state.term /* this state is this elements value */,
+										onChange: this.handleTopicChange /* run this when input changes */
 
 									}),
 									React.createElement(
@@ -24329,8 +24353,8 @@
 										className: 'form-control',
 										id: 'search_start',
 										placeholder: 'Start Date',
-										value: this.state.start,
-										onChange: this.handleStartChange
+										value: this.state.start /* this state is this elements value */,
+										onChange: this.handleStartChange /* run this when input changes */
 									}),
 									React.createElement(
 										'h4',
@@ -24346,8 +24370,8 @@
 										className: 'form-control',
 										id: 'search_start',
 										placeholder: 'Start Date',
-										value: this.state.end,
-										onChange: this.handleEndChange
+										value: this.state.end /* this state is this elements value */,
+										onChange: this.handleEndChange /* run this when input changes */
 									})
 								),
 								React.createElement(
@@ -24371,6 +24395,7 @@
 		}
 	});
 
+	// export Search
 	module.exports = Search;
 
 /***/ },
@@ -24379,19 +24404,28 @@
 
 	'use strict';
 
+	// result component for query and saved pages
+	// ==========================================
+
+	// dependency
 	var React = __webpack_require__(1);
 
+	// helper functions
 	var helpers = __webpack_require__(212);
 
 	// create the search form component
 	var Result = React.createClass({
 	  displayName: 'Result',
 
+	  // get initial state
 	  getInitialState: function getInitialState() {
 	    return {
+	      // if there's a results prop with articles, make that the state.
+	      // Otherwise, it's blank
 	      articles: this.props.results.articles ? this.props.results.articles : ""
 	    };
 	  },
+	  // if prop updates, make the articles in the results prop the result
 	  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
 	    if (this.props != prevProps || this.state.deleted != prevState.deleted) {
 	      this.setState({
@@ -24399,35 +24433,46 @@
 	      });
 	    }
 	  },
+	  // render function
 	  render: function render() {
-
+	    // If there are articles in the state, and the state isn't "", do this
 	    if (this.state.articles && this.state.articles != "") {
-	      console.log(this.state.articles);
+	      // map function for each article in the state
 	      var articles = this.state.articles.map(function (article, index) {
+	        // if there's a main in the headline, use that as the headline
 	        if (article.headline.main) {
 	          var headline = article.headline.main;
-	        } else {
-	          var headline = article.headline;
 	        }
-	        console.log(headline);
+	        // otherwise, save the headline
+	        else {
+	            var headline = article.headline;
+	          }
+	        // url is article.web_url (url of article)
 	        var url = article.web_url;
+	        // pubDat is article.pub_date (date of publication)
 	        var pubDate = article.pub_date;
 
+	        // blank var for button element
 	        var saveOrDeleteBtn;
+	        // if the deleteMode prop is true
 	        if (this.props.deleteMode) {
-	          console.log(this.props.deleteMode);
+	          // make a delete button
 	          saveOrDeleteBtn = React.createElement(
 	            'button',
 	            { className: 'btn btn-primary', onClick: this._handleDelete.bind(this, article) },
 	            'Delete'
 	          );
-	        } else {
-	          saveOrDeleteBtn = React.createElement(
-	            'button',
-	            { className: 'btn btn-primary', onClick: this._saveArticle.bind(this, article) },
-	            'Save'
-	          );
 	        }
+	        // otherwise
+	        else {
+	            // make a save button
+	            saveOrDeleteBtn = React.createElement(
+	              'button',
+	              { className: 'btn btn-primary', onClick: this._saveArticle.bind(this, article) },
+	              'Save'
+	            );
+	          }
+	        // return the jsx
 	        return React.createElement(
 	          'li',
 	          { className: 'list-group-item', key: index },
@@ -24461,7 +24506,7 @@
 	            pubDate
 	          )
 	        );
-	      }.bind(this));
+	      }.bind(this)); // make "this" work as exprected.
 	    }
 	    return React.createElement(
 	      'div',
@@ -24499,18 +24544,23 @@
 	      )
 	    );
 	  },
+	  // open the article when view article button is pressed
 	  _openArticle: function _openArticle(article) {
 	    window.open(article.web_url, "_blank");
 	  },
+	  // save article to mlab
 	  _saveArticle: function _saveArticle(article) {
 	    helpers.saveArticle(article);
 	  },
+	  // handle delete, give it to the deleter prop so parent can make api call
+	  // and send any articles back to result
 	  _handleDelete: function _handleDelete(article) {
 	    this.props.deleter(article);
 	    return false;
 	  }
 	});
 
+	// export the component
 	module.exports = Result;
 
 /***/ },
@@ -24524,29 +24574,35 @@
 
 	// Create a helpers object which we will export
 	var helpers = {
+		// talk to the nytimes api to grab articles based on search form inpit
 		getArticles: function getArticles(term, start, end) {
 			return axios.get("https://api.nytimes.com/svc/search/v2/articlesearch.json" + "?api-key=2ba014e98c7a46ed818343e31f61e45f" + "&q=" + term + "&begin_date=" + start + "&end_date=" + end).then(function (response) {
-				console.log(response);
+				// return the articles
 				return {
 					articles: response.data.response.docs
 				};
 			});
 		},
+		// grab the saved articles in our mlab db using an GET call to our server
 		getSavedArticles: function getSavedArticles() {
-			return axios.get("api/save").then(function (response) {
+			return axios.get("/api/save").then(function (response) {
+				// return the articles
 				return {
 					articles: response
 				};
 			});
 		},
+		// save an article in our mlab db using an GET call to our server
 		saveArticle: function saveArticle(article) {
 			return axios.post("/api/save", { headline: article.headline.main, pub_date: article.pub_date, web_url: article.web_url }).then(function (response) {
-				console.log(response);
+				// return the response
+				return response;
 			});
 		},
+		// delete an article from our mLab using the article id.
 		deleteArticle: function deleteArticle(article) {
-			console.log(article);
 			return axios.delete("/api/delete/" + article._id).then(function (response) {
+				// return the response
 				return response;
 			});
 		}
@@ -25773,48 +25829,61 @@
 
 	'use strict';
 
-	// refer to Search/Search.js
+	// saved article page
+	// ==================
+
+	// dependencies
 	var React = __webpack_require__(1);
 	var Router = __webpack_require__(159);
+
+	// header, search and result components
 	var Header = __webpack_require__(209);
 	var Search = __webpack_require__(210);
 	var Result = __webpack_require__(211);
 
+	// helpers
 	var helpers = __webpack_require__(212);
 
-	// Include the Repos, UserProfile, and Notes Components
-	// var Search = require('./Search/Search');
-	// var UserProfile = require('./Search/Result');
-
+	// Query component
 	var Query = React.createClass({
 		displayName: 'Query',
 
+		// set initial state
 		getInitialState: function getInitialState() {
 			return {
-				results: "",
-				delete: "no"
-			};
+				results: "" };
 		},
+		// the article results
+		// grab any saved articles when the component
 		componentDidMount: function componentDidMount() {
+			// helper function, grabs all articles in mlab db
 			helpers.getSavedArticles().then(function (data) {
+				// set the results state
 				this.setState({
 					results: {
-						articles: data.articles.data
+						articles: data.articles.data // add articles to results
 					}
 				});
-			}.bind(this));
+			}.bind(this)); // allows this to function as expected
 		},
+		// delete article from mlab on button press.
+		// uses the deleter prop in Result component
+		// and send it back to the component.
 		deleteArticle: function deleteArticle(article) {
+			// delete article function in helpers
 			helpers.deleteArticle(article).then(function (response) {
+				// grab saved Articles using helper function
 				helpers.getSavedArticles().then(function (data) {
+					// set the results state
 					this.setState({
 						results: {
 							articles: data.articles.data
 						}
 					});
-				}.bind(this));
-			}.bind(this));
+				}.bind(this)); // allows this to function as expected
+			}.bind(this)); // allows this to function as expected
 		},
+		// render the header and result
 		render: function render() {
 			return React.createElement(
 				'div',
@@ -25825,6 +25894,7 @@
 		}
 	});
 
+	// export component
 	module.exports = Query;
 
 /***/ }
