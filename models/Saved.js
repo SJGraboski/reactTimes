@@ -6,7 +6,8 @@ var Schema = mongoose.Schema;
 var SavedSchema = new Schema({
 	headline: {
 		type: String,
-		required: true
+		required: true,
+		unique: true
 	},
 	pub_date: {
 		type: String,
@@ -14,7 +15,8 @@ var SavedSchema = new Schema({
 	},
 	web_url: {
 		type: String,
-		required: true
+		required: true,
+		unique:true
 	},
 },{
 	timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }

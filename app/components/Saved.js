@@ -5,37 +5,47 @@ var Header = require('./Header.js')
 var Search = require('./Search/Search.js')
 var Result = require('./Search/Result.js')
 
+var helpers = require('../utils/helpers.js')
 
 // Include the Repos, UserProfile, and Notes Components
 // var Search = require('./Search/Search');
 // var UserProfile = require('./Search/Result');
 
 var Query = React.createClass({
-	// handleSearchSubmit: function(search) {
-	// 	var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-	// 	url += '?' + $.param({
- //  		'api-key': "2ba014e98c7a46ed818343e31f61e45f"
-	// 	});
-	// 	$.ajax({
-	// 		url: url,
-	// 		type: 'GET',
-	// 		data: search,
-	// 		success: function(data){
-	// 			this.setState({data:data})
-	// 		}.bind(this),
-	// 		error: function(xhr, status, err) {
-	// 			console.error(this.props.url, status, err.toString())
-	// 		}.bind(this)
-	// 	})
-	// },
-	// getInitialState: function() {
-	// 	return {data: []};
-	// },
+	getInitialState: function() {
+		return {
+			results: "",
+			delete: "no"
+		}
+	},
+	componentDidMount: function(){
+		helpers.getSavedArticles()
+		.then(function(data){
+			this.setState({
+				results: {
+					articles: data.articles.data
+				}
+			})
+		}.bind(this))
+	},
+	deleteArticle: function(article) {
+		helpers.deleteArticle(article)
+		.then(function(response){
+			helpers.getSavedArticles()
+			.then(function(data){
+				this.setState({
+					results: {
+						articles: data.articles.data
+					}
+				})
+			}.bind(this))
+		}.bind(this))
+	},
 	render: function() {
 		return (
 			<div>
-				<Header head="ok" subhead="cool" />
-				<Result />
+				<Header head="Saved Articles" subhead="Saved Articles" />
+				<Result results={this.state.results} deleteMode={true} deleter={this.deleteArticle} />
 			</div>
 		)
 	}

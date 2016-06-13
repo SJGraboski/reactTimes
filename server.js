@@ -7,6 +7,8 @@ var express = require('express');
 var bodyParser = require('body-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
+var methodOverride = require('method-override')
+
 
 
 // start the express app
@@ -16,7 +18,7 @@ var app = express();
 app.use(logger('dev'));
 
 // set up bodyparse
-app.use(bodyParser.urlencoded({extended: true }));
+app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.text());
 app.use(bodyParser.json({type:'application/vnd.api+json'}));
@@ -26,12 +28,9 @@ app.use(bodyParser.json({type:'application/vnd.api+json'}));
 var staticContentFolder = __dirname + '/public';
 app.use(express.static(staticContentFolder));
 
-// our app routes go here
-require('./routes/api.js')(app);
-
 
 // configure our db with mongoose
-mongoose.connect('mongodb://heroku_cxkb5sd5:hi0639lfao57ok35djfampfgt2@ds021663.mlab.com:21663/heroku_cxkb5sd5');
+mongoose.connect('mongodb://heroku_wxsfb2n8:bf5483euvo6pn2lq5nvcqovpr1@ds013574.mlab.com:13574/heroku_wxsfb2n8');
 var db = mongoose.connection;
 
 // mongoose connection: if err, tell us what's up
@@ -42,6 +41,9 @@ db.on('error', function(err){
 db.once('open', function(){
 	console.log('Mongoose connection successful!');
 })
+
+// our app routes go here
+require('./routes/api.js')(app);
 
 
 // define port

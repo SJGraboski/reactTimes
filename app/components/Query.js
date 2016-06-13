@@ -17,7 +17,7 @@ var Query = React.createClass({
 			term: "",
 			start: "",
 			end: "",
-			results: {}
+			results: ""
 		}
 	},
 	componentDidUpdate: function(prevProps, prevState){
@@ -25,9 +25,9 @@ var Query = React.createClass({
 		if ((this.state.term != prevState.term && this.state.term != "" )
 			|| (this.state.start != prevState.start && this.state.start != "" ) 
 				|| (this.state.end != prevState.end && this.state.end != "" )) {
-			console.log("fired");
 			helpers.getArticles(this.state.term, this.state.start, this.state.end)
 			.then(function(data){
+				console.log(data);
 					if(data != this.state.results) {
 						this.setState({
 							results: data
@@ -41,14 +41,14 @@ var Query = React.createClass({
 			term: newTerm,
 			start: newStart,
 			end: newEnd
-		})
+		});
 	},
 	render: function() {
 		return (
 			<div>
 				<Header head="Test" subhead="Second Test" />
 				<Search onSearchSubmit={this.setQuery} />
-				<Result results={this.state.results} />
+				<Result results={this.state.results} deleteMode={false} deleter="" />
 			</div>
 		)
 	}

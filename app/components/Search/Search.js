@@ -8,7 +8,7 @@ var Search = React.createClass({
     	term: '', 
     	start: '',
     	end: ''
-    }
+    } 
   },
   handleTopicChange: function(e) {
     this.setState({term: e.target.value});
@@ -27,7 +27,6 @@ var Search = React.createClass({
     if (!term || !start || !end) {
       return;
     }
-
     this.props.onSearchSubmit(term, start, end);
     return false
   },

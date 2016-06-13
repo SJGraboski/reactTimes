@@ -24095,14 +24095,14 @@
 				term: "",
 				start: "",
 				end: "",
-				results: {}
+				results: ""
 			};
 		},
 		componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
 			// check to make sure at least one of the search inputs are different
 			if (this.state.term != prevState.term && this.state.term != "" || this.state.start != prevState.start && this.state.start != "" || this.state.end != prevState.end && this.state.end != "") {
-				console.log("fired");
 				helpers.getArticles(this.state.term, this.state.start, this.state.end).then(function (data) {
+					console.log(data);
 					if (data != this.state.results) {
 						this.setState({
 							results: data
@@ -24124,7 +24124,7 @@
 				null,
 				React.createElement(Header, { head: 'Test', subhead: 'Second Test' }),
 				React.createElement(Search, { onSearchSubmit: this.setQuery }),
-				React.createElement(Result, { results: this.state.results })
+				React.createElement(Result, { results: this.state.results, deleteMode: false, deleter: '' })
 			);
 		}
 	});
@@ -24259,7 +24259,6 @@
 			if (!term || !start || !end) {
 				return;
 			}
-
 			this.props.onSearchSubmit(term, start, end);
 			return false;
 		},
@@ -24378,110 +24377,138 @@
 /* 211 */
 /***/ function(module, exports, __webpack_require__) {
 
-	"use strict";
+	'use strict';
 
 	var React = __webpack_require__(1);
 
+	var helpers = __webpack_require__(212);
+
 	// create the search form component
 	var Result = React.createClass({
-		displayName: "Result",
+	  displayName: 'Result',
 
-		getInitialState: function getInitialState() {
-			return {
-				articles: ""
-			};
-		},
-		componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
-			if (this.props.results != prevProps.results) this.setState({ articles: this.props.results.articles });
-		},
-		render: function render() {
-			if (this.state.articles != "") {
-				var articles = this.state.articles.map(function (article, index) {
-					if (article.headline.main) {
-						var headline = article.headline.main;
-					} else {
-						var headline = article.headline;
-					}
-					var url = article.web_url;
-					var pubDate = article.pub_date;
-					return React.createElement(
-						"li",
-						{ className: "list-group-item", key: index },
-						React.createElement(
-							"h3",
-							null,
-							article.headline.main && React.createElement(
-								"span",
-								null,
-								React.createElement(
-									"em",
-									null,
-									headline
-								)
-							),
-							React.createElement(
-								"span",
-								{ className: "btn-group pull-right" },
-								React.createElement(
-									"button",
-									{ className: "btn btn-default", "data-url": url },
-									"View Article"
-								),
-								React.createElement(
-									"button",
-									{ className: "btn btn-primary", onClick: this.saveArticle.bind(this, article) },
-									"Save"
-								)
-							)
-						),
-						article.pub_date && React.createElement(
-							"p",
-							null,
-							"Date Published: ",
-							pubDate
-						)
-					);
-				}.bind(this));
-			}
-			return React.createElement(
-				"div",
-				{ className: "row" },
-				React.createElement(
-					"div",
-					{ className: "col-lg-12" },
-					React.createElement(
-						"div",
-						{ className: "panel panel-primary" },
-						React.createElement(
-							"div",
-							{ className: "panel-heading" },
-							React.createElement(
-								"h1",
-								{ className: "panel-title" },
-								React.createElement(
-									"strong",
-									null,
-									React.createElement("i", { className: "fa fa-list-alt" }),
-									"  Results"
-								)
-							)
-						),
-						React.createElement(
-							"div",
-							{ className: "panel-body" },
-							React.createElement(
-								"ul",
-								{ className: "list-group" },
-								articles
-							)
-						)
-					)
-				)
-			);
-		},
-		saveArticle: function saveArticle(article) {
-			console.log(article);
-		}
+	  getInitialState: function getInitialState() {
+	    return {
+	      articles: this.props.results.articles ? this.props.results.articles : ""
+	    };
+	  },
+	  componentDidUpdate: function componentDidUpdate(prevProps, prevState) {
+	    if (this.props != prevProps || this.state.deleted != prevState.deleted) {
+	      this.setState({
+	        articles: this.props.results.articles
+	      });
+	    }
+	  },
+	  render: function render() {
+
+	    if (this.state.articles && this.state.articles != "") {
+	      console.log(this.state.articles);
+	      var articles = this.state.articles.map(function (article, index) {
+	        if (article.headline.main) {
+	          var headline = article.headline.main;
+	        } else {
+	          var headline = article.headline;
+	        }
+	        console.log(headline);
+	        var url = article.web_url;
+	        var pubDate = article.pub_date;
+
+	        var saveOrDeleteBtn;
+	        if (this.props.deleteMode) {
+	          console.log(this.props.deleteMode);
+	          saveOrDeleteBtn = React.createElement(
+	            'button',
+	            { className: 'btn btn-primary', onClick: this._handleDelete.bind(this, article) },
+	            'Delete'
+	          );
+	        } else {
+	          saveOrDeleteBtn = React.createElement(
+	            'button',
+	            { className: 'btn btn-primary', onClick: this._saveArticle.bind(this, article) },
+	            'Save'
+	          );
+	        }
+	        return React.createElement(
+	          'li',
+	          { className: 'list-group-item', key: index },
+	          React.createElement(
+	            'h3',
+	            null,
+	            headline && React.createElement(
+	              'span',
+	              null,
+	              React.createElement(
+	                'em',
+	                null,
+	                headline
+	              )
+	            ),
+	            React.createElement(
+	              'span',
+	              { className: 'btn-group pull-right' },
+	              React.createElement(
+	                'button',
+	                { className: 'btn btn-default', onClick: this._openArticle.bind(this, article) },
+	                'View Article'
+	              ),
+	              saveOrDeleteBtn
+	            )
+	          ),
+	          article.pub_date && React.createElement(
+	            'p',
+	            null,
+	            'Date Published: ',
+	            pubDate
+	          )
+	        );
+	      }.bind(this));
+	    }
+	    return React.createElement(
+	      'div',
+	      { className: 'row' },
+	      React.createElement(
+	        'div',
+	        { className: 'col-lg-12' },
+	        React.createElement(
+	          'div',
+	          { className: 'panel panel-primary' },
+	          React.createElement(
+	            'div',
+	            { className: 'panel-heading' },
+	            React.createElement(
+	              'h1',
+	              { className: 'panel-title' },
+	              React.createElement(
+	                'strong',
+	                null,
+	                React.createElement('i', { className: 'fa fa-list-alt' }),
+	                '  Results'
+	              )
+	            )
+	          ),
+	          React.createElement(
+	            'div',
+	            { className: 'panel-body' },
+	            React.createElement(
+	              'ul',
+	              { className: 'list-group' },
+	              articles
+	            )
+	          )
+	        )
+	      )
+	    );
+	  },
+	  _openArticle: function _openArticle(article) {
+	    window.open(article.web_url, "_blank");
+	  },
+	  _saveArticle: function _saveArticle(article) {
+	    helpers.saveArticle(article);
+	  },
+	  _handleDelete: function _handleDelete(article) {
+	    this.props.deleter(article);
+	    return false;
+	  }
 	});
 
 	module.exports = Result;
@@ -24495,37 +24522,32 @@
 	/*Axios is a convenient NPM package for performing HTTP requests*/
 	var axios = __webpack_require__(213);
 
-	// // Here we have two functions for querying for user and repo information to the GitHub website.
-	// function getArticles(term, start, end){
-	// 	return axios.get(
-	// 		"https://api.nytimes.com/svc/search/v2/articlesearch.json" +
-	// 		"?api-key=2ba014e98c7a46ed818343e31f61e45f" +
-	// 		"&q=" + term +
-	// 		"&begin_date=" + start +
-	// 		"&end_date=" + end
-	// 		).then(function(response){
-	// 		return {
-	// 			articles: response.data.response.docs,
-	// 		}
-	// 	});
-	// };
-
 	// Create a helpers object which we will export
 	var helpers = {
 		getArticles: function getArticles(term, start, end) {
 			return axios.get("https://api.nytimes.com/svc/search/v2/articlesearch.json" + "?api-key=2ba014e98c7a46ed818343e31f61e45f" + "&q=" + term + "&begin_date=" + start + "&end_date=" + end).then(function (response) {
+				console.log(response);
 				return {
 					articles: response.data.response.docs
 				};
 			});
 		},
+		getSavedArticles: function getSavedArticles() {
+			return axios.get("api/save").then(function (response) {
+				return {
+					articles: response
+				};
+			});
+		},
 		saveArticle: function saveArticle(article) {
-			return axios.post("/api/save", {
-				headline: article.headline.main,
-				pub_date: article.pub_date,
-				web_url: article.web_url
-			}).then(function (response) {
+			return axios.post("/api/save", { headline: article.headline.main, pub_date: article.pub_date, web_url: article.web_url }).then(function (response) {
 				console.log(response);
+			});
+		},
+		deleteArticle: function deleteArticle(article) {
+			console.log(article);
+			return axios.delete("/api/delete/" + article._id).then(function (response) {
+				return response;
 			});
 		}
 	};
@@ -25758,6 +25780,8 @@
 	var Search = __webpack_require__(210);
 	var Result = __webpack_require__(211);
 
+	var helpers = __webpack_require__(212);
+
 	// Include the Repos, UserProfile, and Notes Components
 	// var Search = require('./Search/Search');
 	// var UserProfile = require('./Search/Result');
@@ -25765,32 +25789,38 @@
 	var Query = React.createClass({
 		displayName: 'Query',
 
-		// handleSearchSubmit: function(search) {
-		// 	var url = "https://api.nytimes.com/svc/search/v2/articlesearch.json";
-		// 	url += '?' + $.param({
-		//  		'api-key': "2ba014e98c7a46ed818343e31f61e45f"
-		// 	});
-		// 	$.ajax({
-		// 		url: url,
-		// 		type: 'GET',
-		// 		data: search,
-		// 		success: function(data){
-		// 			this.setState({data:data})
-		// 		}.bind(this),
-		// 		error: function(xhr, status, err) {
-		// 			console.error(this.props.url, status, err.toString())
-		// 		}.bind(this)
-		// 	})
-		// },
-		// getInitialState: function() {
-		// 	return {data: []};
-		// },
+		getInitialState: function getInitialState() {
+			return {
+				results: "",
+				delete: "no"
+			};
+		},
+		componentDidMount: function componentDidMount() {
+			helpers.getSavedArticles().then(function (data) {
+				this.setState({
+					results: {
+						articles: data.articles.data
+					}
+				});
+			}.bind(this));
+		},
+		deleteArticle: function deleteArticle(article) {
+			helpers.deleteArticle(article).then(function (response) {
+				helpers.getSavedArticles().then(function (data) {
+					this.setState({
+						results: {
+							articles: data.articles.data
+						}
+					});
+				}.bind(this));
+			}.bind(this));
+		},
 		render: function render() {
 			return React.createElement(
 				'div',
 				null,
-				React.createElement(Header, { head: 'ok', subhead: 'cool' }),
-				React.createElement(Result, null)
+				React.createElement(Header, { head: 'Saved Articles', subhead: 'Saved Articles' }),
+				React.createElement(Result, { results: this.state.results, deleteMode: true, deleter: this.deleteArticle })
 			);
 		}
 	});
