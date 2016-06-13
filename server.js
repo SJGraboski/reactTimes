@@ -1,4 +1,4 @@
-/* react Times
+/* React Times
  * Rutgers Coding Bootcampt assignment
  * =============================================================================== */
 
@@ -8,8 +8,6 @@ var bodyParser = require('body-parser');
 var logger = require('morgan');
 var mongoose = require('mongoose');
 var methodOverride = require('method-override')
-
-
 
 // start the express app
 var app = express();
