@@ -6,12 +6,6 @@ var Query = require('../components/Query');
 var Saved = require('../components/Saved');
 
 
-/*Note how we include the Profile component as a route. 
-We don't need to include the sub components like Repos or User Profile
-These are already included here.
-*/
-// var Profile = require('../components/Search');
-
 // We will then pull the router 
 var Router = require('react-router');
 var Route = Router.Route;
@@ -20,22 +14,15 @@ var Route = Router.Route;
 var IndexRoute	= Router.IndexRoute;
 
 module.exports = (
-	// When a user goes to root they will be served the Main component
-	// The instructions will then go to our app.js
-	// If no other route matches... Then run the IndexRoute.	
-
-	// When we go to the main path it will put in the menu
-
-	/*But it will also drop in the home contents for any other path*
-	/*In effect home is a child of the main. */
+	// When a user goes to root they will be served the App component
 	<Route path="/" component={App}>
 	
-		{/* If user selects the profile path... we get the Profile component*/}
+		{/* If user selects the saved path we get the saved component*/}
 			<Route path="/saved" component={Saved} />
 			<Route path="/search" component={Query} />
 
 
-		{/*If user selects any other path... we get the Search Route*/}
+		{/*If user selects any other path we get the query route*/}
 				<IndexRoute component={Query} />
 
 	</Route>

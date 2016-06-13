@@ -2,7 +2,7 @@
 var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
-// make our Article schema
+// make our saved article schema
 var SavedSchema = new Schema({
 	headline: {
 		type: String,
@@ -22,5 +22,8 @@ var SavedSchema = new Schema({
 	timestamps: { createdAt: 'created_at', updatedAt: 'updated_at' }
 });
 
+// save it as a model
 var Saved = mongoose.model('Saved', SavedSchema);
+
+// export it
 module.exports = Saved;

@@ -2,7 +2,7 @@ var React = require('react');
 
 var App = React.createClass({
 
-// refer to everything
+// main component app. Takes in the other routes
 	render: function() {
 		return (
 			<div className="container">

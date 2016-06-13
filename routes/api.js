@@ -26,25 +26,35 @@ module.exports = function(app) {
 
 	// call to grap articles and send them as json
 	app.get('/api/save', function(req, res) {
-		// reach into the Articles db for at least 50 results
+		// reach into the Saved db for at least 50 results
 		var query = Saved.find().sort({'created_at': -1});
+
+		// execute the query
 		query.exec(function(err, docs) {
+			// log any errors
 			if (err){
 				console.log(error)
-			} else {
+			} 
+			// otherwise, send the articles as a json
+			else {
 				res.json(docs);
 			}
 		})
 	});
 
-	// call to grap articles and send them as json
+	// call to delete an article when user clicks delete button
 	app.delete('/api/delete/:id', function(req, res) {
+		// grab the object id from the param
 		var id = req.params.id;
+
+		// use the object id to delete the object
 		Saved.remove({ _id: id}, function(err) {
 			// log any errors
 			if (err){
 				console.log(err);
-			} else {
+			} 
+			// otherwise send a success message
+			else {
 				res.status(201).end();
 			}
 		})
