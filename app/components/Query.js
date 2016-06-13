@@ -55,7 +55,7 @@ var Query = React.createClass({
 	render: function() {
 		return (
 			<div>
-				<Header head="Test" subhead="Second Test" />
+				<Header head="React Times" subhead="Search for NYTimes articles, save them to a database!" />
 				<Search onSearchSubmit={this.setQuery} />
 				<Result results={this.state.results} deleteMode={false} deleter="" />
 			</div>

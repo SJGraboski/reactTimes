@@ -57,7 +57,7 @@ var Query = React.createClass({
 	render: function() {
 		return (
 			<div>
-				<Header head="Saved Articles" subhead="Saved Articles" />
+				<Header head="Saved Articles" subhead="Press the delete button to delete articles" />
 				<Result results={this.state.results} deleteMode={true} deleter={this.deleteArticle} />
 			</div>
 		)

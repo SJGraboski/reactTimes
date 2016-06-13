@@ -74,7 +74,7 @@ var Search = React.createClass({
 										type="text" 
 										className="form-control" 
 										id="search_start"
-										placeholder="Start Date"
+										placeholder="Start Date (YYYYMMDD)"
 										value={this.state.start /* this state is this elements value */}
 										onChange={this.handleStartChange /* run this when input changes */}
 									/>
@@ -84,7 +84,7 @@ var Search = React.createClass({
 										type="text" 
 										className="form-control" 
 										id="search_start"
-										placeholder="Start Date"
+										placeholder="End Date (YYYYMMDD)"
 										value={this.state.end /* this state is this elements value */}
 										onChange={this.handleEndChange /* run this when input changes */}
 									/>
