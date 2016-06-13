@@ -1,5 +1,5 @@
 /* react Times
- *
+ * Rutgers Coding Bootcampt assignment
  * =============================================================================== */
 
 // dependencies
@@ -37,12 +37,13 @@ var db = mongoose.connection;
 db.on('error', function(err){
 	console.log('Mongoose Error: ', err);
 });
-// once the con's open, tell us
+// once the connections open, tell us
 db.once('open', function(){
 	console.log('Mongoose connection successful!');
 })
 
-// our app routes go here
+// our api route goes here
+// no need for an html route: react and react-router will handle that.
 require('./routes/api.js')(app);
 
 
@@ -51,6 +52,6 @@ var PORT = process.env.PORT || 3000;
 
 // listen
 app.listen(PORT, function(){
-	console.log('app listening on port 3000')
+	console.log('app listening on' + PORT);
 })
 
