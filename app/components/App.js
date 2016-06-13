@@ -1,3 +1,5 @@
+// App
+// ===
 var React = require('react');
 
 var App = React.createClass({
@@ -12,4 +14,5 @@ var App = React.createClass({
 	}
 })
 
+// export, where config/router will require it.
 module.exports = App;

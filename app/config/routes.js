@@ -26,5 +26,4 @@ module.exports = (
 				<IndexRoute component={Query} />
 
 	</Route>
-
 );

@@ -1,4 +1,5 @@
 // Query page
+// ==========
 
 // dependencies
 var React = require('react');
